@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#87ceeb" />
+  <meta name="description" content="Buzzy The Busy Busy Bee - a colorful HTML5 side-scrolling arcade game. Fly, collect nectar, dodge spiders and birds!" />
+  <title>Buzzy The Busy Busy Bee 🐝</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐝</text></svg>" />
+</head>
+<body>
+  <!-- ===== Game viewport: the canvas is scaled to fit while keeping aspect ratio ===== -->
+  <div id="game-container">
+    <canvas id="game-canvas" width="960" height="540" aria-label="Buzzy the Bee game canvas"></canvas>
+
+    <!-- ===== Heads-up display (drawn over the canvas via HTML for crisp text) ===== -->
+    <div id="hud" class="hidden">
+      <div class="hud-left">
+        <div id="score-box">Score: <span id="score">0</span></div>
+        <div id="high-box">Best: <span id="high-score">0</span></div>
+      </div>
+      <div class="hud-center">
+        <div id="powerup-timers"></div>
+      </div>
+      <div class="hud-right">
+        <div id="lives" aria-label="lives"></div>
+        <button id="pause-btn" class="icon-btn" title="Pause (P / Esc)">⏸</button>
+        <button id="mute-btn" class="icon-btn" title="Mute (M)">🔊</button>
+      </div>
+    </div>
+
+    <!-- ===== Start / Menu screen ===== -->
+    <div id="start-screen" class="overlay">
+      <div class="panel">
+        <h1 class="title">Buzzy <span class="bee">🐝</span><br />The Busy Busy Bee</h1>
+        <p class="tagline">Collect nectar, dodge danger, become the busiest bee in the meadow!</p>
+        <div class="instructions">
+          <div class="instr-col">
+            <h3>Controls</h3>
+            <ul>
+              <li><b>Arrow keys</b> / <b>WASD</b> — Fly</li>
+              <li><b>P</b> or <b>Esc</b> — Pause</li>
+              <li><b>M</b> — Mute sound</li>
+              <li><b>Mobile</b> — Touch &amp; drag to fly</li>
+            </ul>
+          </div>
+          <div class="instr-col">
+            <h3>Goal</h3>
+            <ul>
+              <li>🌼 Collect nectar for points</li>
+              <li>🕷️ Avoid spiders, birds &amp; spray</li>
+              <li>⭐ Grab power-ups for an edge</li>
+              <li>🏆 Beat your high score!</li>
+            </ul>
+          </div>
+        </div>
+        <button id="start-btn" class="big-btn">Start Buzzing!</button>
+        <button id="achievements-btn" class="link-btn">🏆 Achievements</button>
+      </div>
+    </div>
+
+    <!-- ===== Pause screen ===== -->
+    <div id="pause-screen" class="overlay hidden">
+      <div class="panel">
+        <h2>Paused</h2>
+        <button id="resume-btn" class="big-btn">Resume</button>
+        <button id="quit-btn" class="link-btn">Quit to Menu</button>
+      </div>
+    </div>
+
+    <!-- ===== Game over screen ===== -->
+    <div id="gameover-screen" class="overlay hidden">
+      <div class="panel">
+        <h2>Game Over</h2>
+        <p class="go-stats">
+          Score: <span id="final-score">0</span><br />
+          Best: <span id="final-high">0</span>
+        </p>
+        <p id="new-record" class="record hidden">🎉 New High Score! 🎉</p>
+        <button id="restart-btn" class="big-btn">Play Again</button>
+        <button id="menu-btn" class="link-btn">Main Menu</button>
+      </div>
+    </div>
+
+    <!-- ===== Achievements screen ===== -->
+    <div id="achievements-screen" class="overlay hidden">
+      <div class="panel wide">
+        <h2>🏆 Achievements</h2>
+        <div id="achievements-list"></div>
+        <button id="ach-back-btn" class="big-btn">Back</button>
+      </div>
+    </div>
+
+    <!-- ===== Toast notifications (achievements, power-ups) ===== -->
+    <div id="toast-container"></div>
+
+    <!-- ===== Loading hint until first user gesture (audio unlock) ===== -->
+    <div id="tap-hint" class="hidden">Tap / click to enable sound 🔊</div>
+  </div>
+
+  <!-- Scripts loaded in dependency order (no bundler needed, works from file://) -->
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
