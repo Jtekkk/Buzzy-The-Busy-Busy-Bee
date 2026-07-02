@@ -1,0 +1,59 @@
+name: Build Windows Installer
+
+# Produces a Windows (.exe) installer for the game using Electron + electron-builder.
+#
+# Runs when you:
+#   - push a version tag like v1.0.0  -> builds AND publishes a GitHub Release
+#   - trigger it manually from the Actions tab (workflow_dispatch)
+#
+# The installer is always uploaded as a downloadable workflow artifact.
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+# The release step needs write access to create/attach the release.
+permissions:
+  contents: write
+
+jobs:
+  build-windows-installer:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # No committed lockfile, so use `npm install` (not `npm ci`).
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      # electron-builder bundles the game with Electron and produces the
+      # NSIS installer under dist/ (BuzzyBee-Setup-<version>.exe).
+      - name: Build Windows installer
+        run: npm run dist
+        env:
+          # Give electron-builder a token so it can fetch build resources
+          # and (on tag builds) publish the release.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: buzzy-bee-windows-installer
+          path: dist/*.exe
+          if-no-files-found: error
+
+      # On a version tag, publish the installer as a GitHub Release asset.
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.exe
+          generate_release_notes: true

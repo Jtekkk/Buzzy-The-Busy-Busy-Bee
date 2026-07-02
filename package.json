@@ -1,0 +1,44 @@
+{
+  "name": "buzzy-the-busy-busy-bee",
+  "version": "1.0.0",
+  "description": "Buzzy The Busy Busy Bee — a colorful HTML5 side-scrolling arcade game, packaged as a desktop app.",
+  "author": "Jtekkk",
+  "license": "MIT",
+  "main": "electron-main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --publish never",
+    "pack": "electron-builder --dir"
+  },
+  "devDependencies": {
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.jtekkk.buzzybee",
+    "productName": "Buzzy The Busy Busy Bee",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.html",
+      "electron-main.js",
+      "css/**/*",
+      "js/**/*",
+      "build/icon.*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.png",
+      "artifactName": "BuzzyBee-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Buzzy Bee"
+    }
+  }
+}

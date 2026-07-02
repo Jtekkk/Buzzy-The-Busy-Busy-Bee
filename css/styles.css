@@ -1,0 +1,379 @@
+/* ============================================================
+   Buzzy The Busy Busy Bee — styles
+   Layout goal: a centered, aspect-ratio-locked game viewport that
+   scales to fill desktop or mobile screens. All gameplay is drawn
+   on the <canvas>; HTML is used only for HUD, menus and toasts.
+   ============================================================ */
+
+:root {
+  --honey: #ffc107;
+  --honey-dark: #ff9800;
+  --sky: #87ceeb;
+  --leaf: #4caf50;
+  --leaf-dark: #2e7d32;
+  --ink: #3a2e1f;
+  --panel-bg: rgba(255, 253, 245, 0.96);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --font: "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1b2a3a;
+  font-family: var(--font);
+  color: var(--ink);
+  touch-action: none; /* prevent browser gestures interfering with play */
+}
+
+/* The container fills the screen; the canvas is sized/positioned by JS
+   to preserve the 16:9 aspect ratio (letterboxing on odd screens). */
+#game-container {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 30%, #2a4055, #101820);
+}
+
+#game-canvas {
+  display: block;
+  background: var(--sky);
+  box-shadow: var(--shadow);
+  image-rendering: auto;
+  touch-action: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ---------------- HUD ---------------- */
+#hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* let clicks pass through to canvas except buttons */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: clamp(8px, 2vw, 18px);
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: clamp(14px, 2.4vw, 22px);
+}
+
+.hud-left,
+.hud-right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.hud-right {
+  align-items: flex-end;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.hud-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+#high-box {
+  font-size: 0.8em;
+  opacity: 0.9;
+}
+
+#lives {
+  font-size: 1.1em;
+  letter-spacing: 2px;
+}
+
+#powerup-timers {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pu-chip {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 0.75em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.icon-btn {
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.85);
+  border: none;
+  border-radius: 12px;
+  width: clamp(34px, 6vw, 44px);
+  height: clamp(34px, 6vw, 44px);
+  font-size: clamp(16px, 3vw, 22px);
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s;
+}
+.icon-btn:active {
+  transform: scale(0.9);
+}
+
+/* ---------------- Overlays / menus ---------------- */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 20, 30, 0.55);
+  backdrop-filter: blur(3px);
+  padding: 16px;
+  z-index: 10;
+  animation: fade 0.25s ease;
+}
+
+@keyframes fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.panel {
+  background: var(--panel-bg);
+  border-radius: 24px;
+  padding: clamp(20px, 4vw, 40px);
+  max-width: 640px;
+  width: min(92vw, 640px);
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 4px solid var(--honey);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+.panel.wide {
+  max-width: 720px;
+  width: min(94vw, 720px);
+}
+
+.title {
+  font-size: clamp(28px, 6vw, 46px);
+  color: var(--honey-dark);
+  line-height: 1.1;
+  text-shadow: 2px 2px 0 #fff3, 3px 3px 0 rgba(0, 0, 0, 0.1);
+}
+.title .bee {
+  display: inline-block;
+  animation: bob 1.2s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-6px) rotate(6deg); }
+}
+
+.tagline {
+  margin: 14px 0 20px;
+  font-size: clamp(14px, 2.6vw, 18px);
+  color: #6b5a3f;
+}
+
+.instructions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  text-align: left;
+  margin-bottom: 24px;
+}
+.instr-col {
+  background: #fff8e6;
+  border-radius: 16px;
+  padding: 14px 18px;
+  min-width: 200px;
+  flex: 1;
+}
+.instr-col h3 {
+  color: var(--honey-dark);
+  margin-bottom: 8px;
+}
+.instr-col ul {
+  list-style: none;
+  font-size: clamp(13px, 2.2vw, 15px);
+  line-height: 1.7;
+}
+
+h2 {
+  color: var(--honey-dark);
+  font-size: clamp(24px, 5vw, 36px);
+  margin-bottom: 16px;
+}
+
+.go-stats {
+  font-size: clamp(16px, 3vw, 20px);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.record {
+  color: var(--leaf-dark);
+  font-weight: bold;
+  font-size: clamp(16px, 3vw, 20px);
+  margin-bottom: 12px;
+  animation: pop 0.5s ease;
+}
+@keyframes pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Buttons */
+.big-btn {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 10px auto;
+  padding: 14px 24px;
+  font-size: clamp(16px, 3vw, 20px);
+  font-weight: bold;
+  font-family: var(--font);
+  color: #4a3200;
+  background: linear-gradient(180deg, var(--honey), var(--honey-dark));
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: 0 5px 0 #c77800, 0 8px 14px rgba(0, 0, 0, 0.25);
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+.big-btn:hover {
+  transform: translateY(-2px);
+}
+.big-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #c77800, 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #7a6440;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: clamp(13px, 2.4vw, 16px);
+  margin-top: 8px;
+  font-family: var(--font);
+}
+.link-btn:hover {
+  color: var(--honey-dark);
+}
+
+/* ---------------- Achievements list ---------------- */
+#achievements-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+@media (min-width: 480px) {
+  #achievements-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.ach-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff8e6;
+  border-radius: 14px;
+  padding: 10px 14px;
+  border: 2px solid transparent;
+}
+.ach-item.unlocked {
+  border-color: var(--leaf);
+  background: #eaffea;
+}
+.ach-item .ach-icon {
+  font-size: 28px;
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+.ach-item.unlocked .ach-icon {
+  filter: none;
+  opacity: 1;
+}
+.ach-text b {
+  display: block;
+  font-size: 15px;
+}
+.ach-text span {
+  font-size: 12px;
+  color: #7a6440;
+}
+
+/* ---------------- Toasts ---------------- */
+#toast-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  z-index: 20;
+  pointer-events: none;
+  width: 100%;
+}
+
+.toast {
+  background: rgba(30, 40, 30, 0.92);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: clamp(13px, 2.6vw, 16px);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--honey);
+  animation: toast-in 0.35s ease, toast-out 0.35s ease 2.6s forwards;
+  max-width: 90vw;
+}
+@keyframes toast-in {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes toast-out {
+  to { transform: translateY(20px); opacity: 0; }
+}
+
+#tap-hint {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  z-index: 30;
+  animation: fade 0.4s ease;
+}
