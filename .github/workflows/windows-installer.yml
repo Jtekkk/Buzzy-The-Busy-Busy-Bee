@@ -9,6 +9,11 @@ name: Build Windows Installer
 # The installer is always uploaded as a downloadable workflow artifact.
 on:
   push:
+    branches:
+      # Temporary: lets us build the installer from the feature branch before
+      # it is merged to the default branch (workflow_dispatch needs the file on
+      # the default branch). Remove this branch entry after the first build.
+      - claude/buzzy-bee-game-qkd4r4
     tags:
       - "v*"
   workflow_dispatch:
